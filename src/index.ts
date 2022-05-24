@@ -1,6 +1,7 @@
 import express from "express"
 
 import sequlize from "./database"
+import { Todo } from "./models/Todo";
 const { QueryTypes } = require('sequelize');
 
 const router = express.Router()
