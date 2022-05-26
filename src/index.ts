@@ -1,5 +1,6 @@
 import express from "express"
 import sequlize from "./database"
+import todoRouter from "./endpoint/todo_query";
 import { Todo } from "./models/Todo";
 
 const router = express.Router()
@@ -10,7 +11,7 @@ const port = 8080
 app.use(express.json())
 app.use(express.urlencoded());
 
-//app.use('/todo', "")
+app.use('/todo', todoRouter)
 
 app.get('/ping', async (req, res) => {
     res.json({ ciao: "ciao" })
@@ -29,6 +30,7 @@ async function creaDatabase() {
     }
 
 }
+
 
 sequlize.authenticate().then(async () => {
     console.log("Database connected")
