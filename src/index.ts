@@ -14,7 +14,8 @@ app.use(express.urlencoded());
 app.use('/todo', todoRouter)
 
 app.get('/ping', async (req, res) => {
-    res.json({ ciao: "ciao" })
+    console.log("ping")
+    res.json({ ciao: "ping" })
 })
 
 
