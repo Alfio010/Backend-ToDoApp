@@ -1,0 +1,15 @@
+{
+    "configurations": [
+    {
+        "name": "IndexTodo",
+        "runtimeArgs": ["-r", "ts-node/register/transpile-only"],
+        "program": "${workspaceFolder}/src/index.ts",
+        //"runtimeVersion": "16.14.2",
+        "request": "launch",
+        "skipFiles": [
+            "<node_internals>/**"
+        ],
+        "type": "pwa-node"
+    }
+    ]
+}

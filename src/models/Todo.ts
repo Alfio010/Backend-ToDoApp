@@ -1,6 +1,5 @@
-import { BuildOptions, DataTypes, Model, Sequelize } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import sequlize from '../database';
-import sequelizeConnection from '../database'
 
 type Todo = Model<{
     ID_Todo: number
@@ -26,10 +25,10 @@ export const Todo = sequlize.define<Todo>("Todo", {
         primaryKey: true
     },
     name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING
     },
     done: {
         type: DataTypes.INTEGER
