@@ -2,24 +2,25 @@ import { DataTypes, Model } from 'sequelize'
 import sequlize from '../database';
 
 type Todo = Model<{
-    ID_Todo: number
+    todoId: number
     name: string
     description?: string
     done: number
     priority: string
     date_add: Date
-    date_done?: Date
+    date_done?: Date | null
 }, {
+    todoId: number
     name: string
     description?: string
     done: number
     priority: string
     date_add: Date
-    date_done?: Date
+    date_done?: Date | null
 }>
 
 export const Todo = sequlize.define<Todo>("Todo", {
-    ID_Todo: {
+    todoId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
