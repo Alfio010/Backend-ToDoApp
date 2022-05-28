@@ -96,6 +96,22 @@ todoRouter.post('/delete', async (req, res) => {
     }
 })
 
+todoRouter.get('/all', async (req, res) => {
+
+
+    try {
+
+        const todo = await Todo.findAll({
+            attributes: {exclude: 
+                ['createdAt', 'updatedAt']
+            }
+        })
+
+        res.json(todo)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
 
 export default todoRouter
 
