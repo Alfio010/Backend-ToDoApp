@@ -1,127 +1,113 @@
-import express from "express"
+import express from "express";
 import { Todo } from "../models/Todo";
 
-
-const todoRouter = express.Router()
+const todoRouter = express.Router();
 
 // curl -H "content-type: Application/json" -XPOST 'http://localhost:8080/todo/create' -d '{ "name": "test", "surname": "test", "email": "test", "password": "test" }'
-todoRouter.post('/create', async (req, res) => {
+todoRouter.post("/create", async (req, res) => {
+  const body: {
+    todoId: number;
+    name: string;
+    description?: string;
+    done: number;
+    priority: string;
+    date_add: Date;
+    date_done?: Date;
+  } = req.body;
 
-    const body: { todoId: number; name: string; description?: string; done: number; priority: string; date_add: Date; date_done?: Date } = req.body
+  if (!body.name) {
+    console.log("name not given! " + body.name);
+    return res.status(401).json({ error: "name not given!" });
+  }
 
-    if (!body.name) {
-        console.log("name not given! " + body.name)
-        return res.status(401).json({ error: 'name not given!' })
-    }
-    if (!body.priority) {
-        console.log("priority not given!")
-        return res.status(401).json({ error: 'priority not given!' })
-    }
-    if (!body.date_add) {
-        console.log("date_add not given!")
-        return res.status(401).json({ error: 'date_add not given!' })
-    }
+  if (!body.priority) {
+    console.log("priority not given!");
+    return res.status(401).json({ error: "priority not given!" });
+  }
 
-    try {
+  if (!body.date_add) {
+    console.log("date_add not given!");
+    return res.status(401).json({ error: "date_add not given!" });
+  }
 
-        const todo = await Todo.bulkCreate(
-            [
-                {
-                    todoId: body.todoId,
-                    name: body.name,
-                    description: body.description,
-                    done: body.done,
-                    priority: body.priority,
-                    date_add: body.date_add,
-                    date_done: body.date_done
-                }
-            ],
-            {
-                ignoreDuplicates: true,
-            }
-        ).then(() => console.log("Todo inserito " + body.todoId));
+  try {
+    const todo = await Todo.bulkCreate(
+      [
+        {
+          todoId: body.todoId,
+          name: body.name,
+          description: body.description,
+          done: body.done,
+          priority: body.priority,
+          date_add: body.date_add,
+          date_done: body.date_done,
+        },
+      ],
+      {
+        ignoreDuplicates: true,
+      }
+    ).then(() => console.log("Todo inserito " + body.todoId));
 
-        res.json(todo)
-    } catch (err) {
-        res.status(500).json(err)
-    }
-})
+    res.json(todo);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-todoRouter.post('/update', async (req, res) => {
+todoRouter.post("/update", async (req, res) => {
+  const body: { todoId: number; done: number; date_done?: Date | null } =
+    req.body;
+  let date_donee = body.date_done;
 
-    const body: { todoId: number; done: number; date_done?: Date | null } = req.body
-    let date_donee = body.date_done
+  if (!date_donee) {
+    date_donee = null;
+  }
 
-    if (!date_donee) {
-        date_donee = null
-    }
+  try {
+    const todo = await Todo.update(
+      {
+        done: body.done,
+        date_done: date_donee,
+      },
+      {
+        where: {
+          todoId: body.todoId,
+        },
+      }
+    );
 
-    try {
+    res.json(todo);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-        const todo = await Todo.update(
-            {
-                done: body.done,
-                date_done: date_donee
-            },
-            {
-                where: {
-                    todoId: body.todoId
-                }
-            }
-        )
+todoRouter.post("/delete", async (req, res) => {
+  const body: { todoId: number } = req.body;
 
-        res.json(todo)
-    } catch (err) {
-        res.status(500).json(err)
-    }
-})
+  try {
+    const todo = await Todo.destroy({
+      where: {
+        todoId: body.todoId,
+      },
+    });
 
-todoRouter.post('/delete', async (req, res) => {
+    res.json(todo);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-    const body: { todoId: number } = req.body
+todoRouter.get("/all", async (req, res) => {
+  try {
+    const todo = await Todo.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
 
-    try {
+    res.json(todo);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-        const todo = await Todo.destroy(
-            {
-                where: {
-                    todoId: body.todoId
-                }
-            }
-        )
-
-        res.json(todo)
-    } catch (err) {
-        res.status(500).json(err)
-    }
-})
-
-todoRouter.get('/all', async (req, res) => {
-
-
-    try {
-
-        const todo = await Todo.findAll({
-            attributes: {exclude: 
-                ['createdAt', 'updatedAt']
-            }
-        })
-
-        res.json(todo)
-    } catch (err) {
-        res.status(500).json(err)
-    }
-})
-
-export default todoRouter
-
-
-
-/*const todo = await Todo.create({
-           name: body.name,
-           description: body.description,
-           done: body.done,
-           priority: body.priority,
-           date_add: body.date_add,
-           date_done: body.date_done
-       });*/
+export default todoRouter;
